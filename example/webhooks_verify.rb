@@ -12,13 +12,13 @@ end
 class Webhooks < WEBrick::HTTPServlet::AbstractServlet
   def do_POST(request, response)
     # 签名在头部信息的 x-pingplusplus-signature 字段
-    if !request.header.has_key?('x-pingplusplus-signature')
+    if !request.header.has_key?('X-Pingplusplus-Signature')
       response.status = 401
       return
     end
     # 原始请求数据是待验签数据，请根据实际情况获取
     raw_data = request.body
-    signature = request.header['x-pingplusplus-signature'][0]
+    signature = request.header['X-Pingplusplus-Signature'][0]
     # 请从 https://dashboard.pingxx.com 获取「Webhooks 验证 Ping++ 公钥」
     pub_key_path = File.dirname(__FILE__) + '/rsa_public_key.pem'
     if verify_signature(raw_data, signature, pub_key_path)
